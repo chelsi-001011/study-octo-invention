@@ -1,71 +1,74 @@
-//Rabin-Karp Algorithm
+//KMP (Knuth Morris Pratt) Pattern Searching
 #include <bits/stdc++.h>
 using namespace std;
 
-// d is the number of characters in the input alphabet
-#define d 256
+void computeLPSArray(char* pat, int m, int* lps)
+{
+	//length of previous longest prefix suffix
+	int len = 0;
 
-//q is a prime number used for hash function
+	lps[0] = 0;
 
-void search (char pat[], char txt[], int q) {
+	int i = 1;
+	while (i < m)
+	{
+		if (pat[i] == pat[len])
+		{
+			len++;
+			lps[i] = len;
+			++i;
+		} else {
+			if (len != 0) {
+				len = lps[len - 1];
+			}
+			else {
+				lps[i] = 0;
+				++i;
+			}
+		}
+	}
+}
+
+void KMPSearch(char* pat, char* txt) {
+
 	int m = strlen(pat);
 	int n = strlen(txt);
-	int i = 0, j = 0;
-	int p = 0; // hash value for pattern
-	int t = 0; // hash value for txt
-	int h = 1;
 
-	// The value of h would be "pow(d, M-1)%q"
-	for (i = 0; i < m - 1; i++)
-	{
-		h = (h * d) % q;
-	}
+	int lps[m];
 
-	//first set of values for pattern and text
-	for ( i = 0; i < m; i++)
-	{
-		p = (p * d + pat[i]) % q;
-		t = (t * d + txt[i]) % q;
-	}
+	computeLPSArray(pat, m, lps);
 
-	//sliding over the text now
-	for (i = 0; i <= n - m; i++)
-	{
-		if (p == t)
+	int i = 0, j = 0; //i == index for txt, j== index for pat
+	while (i < n) {
+		if (pat[j] == txt[i])
 		{
-			for (j = 0; j < m; j++)
-			{
-				if (txt[i + j] != pat[j])
-					break;
-
-			}
-			if (j == m)
-			{
-				cout << "Pattern found at index " << i << endl;
-			}
+			++i;
+			++j;
 		}
 
-		if (i < n - m)
+		if (j == m)
 		{
-			t = (d * (t - txt[i] * h) + txt[i + m]) % q;
-
-			if (t < 0)
-			{
-				t = (t + q);
-			}
+			cout << "Found pattern at index " << i - j << endl;
+			j = lps[j - 1];
+		}
+		else if (i < n && pat[j] != txt[i])
+		{
+			if (j != 0)
+				j = lps[j - 1];
+			else
+				i++;
 		}
 	}
+
 }
 
 int main()
 {
-	char txt[] = "GEEKS FOR GEEKS";
-	char pat[] = "GEEK";
-
-	// A prime number
-	int q = 101;
-
-	// Function Call
-	search(pat, txt, q);
+	char txt[] = "ABABDABACDABABCABAB";
+	char pat[] = "ABABCABAB";
+	KMPSearch(pat, txt);
 	return 0;
 }
+
+
+

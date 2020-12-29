@@ -1,35 +1,69 @@
-//Convert a sentence into its equivalent mobile numeric keypad sequence
-//Checkout the image : https://media.geeksforgeeks.org/wp-content/cdn-uploads/Mobile-keypad.png
-//Input : GEEKSFORGEEKS
-// Output : 4333355777733366677743333557777
+// Count the Reversals
+// Input
+// 4
+// }{{}}{{{
+// {{}}}}
+// {{}{{{}{{}}{{
+// {{{{}}}}
+
+// Output
+// 3
+// 1
+// -1
+// 0
+// Time Complexity: O(n)
+// Auxiliary Space: O(n)
+#include <iostream>
 #include <bits/stdc++.h>
 using namespace std;
 
-string printSequence(string s[], string input)
-{
-	string res = "";
-	for (int i = 0; i < input.size(); i++)
-	{
-		res += s[input[i] - 65];
-	}
-	return res;
+int countReversals(string s) {
+    int n = s.size();
+
+    if (n % 2 != 0)
+    {
+        return -1;
+    }
+    stack <char> stk;
+
+    for (int i = 0; i < n; i++)
+    {
+        if (s[i] == '}' && !stk.empty())
+        {
+            if ( stk.top() == '{') {
+                stk.pop();
+            }
+            else {
+                stk.push(s[i]);
+            }
+        } else {
+            stk.push(s[i]);
+        }
+    }
+    int M = 0, N = 0, res = 0;
+    while (!stk.empty()) {
+        if (stk.top() == '{')
+            M++;
+        else {
+            N++;
+        }
+        stk.pop();
+    }
+    res = ceil((double)M / 2) + ceil((double)N / 2);
+    // ceil(m/2) + ceil(n/2) == (m+n)/2 + (n/2)
+    cout << ceil((double)M / 2) << " " << ceil((double)N / 2) << endl;
+    return res;
 }
 
-int main()
-{
-	// storing the sequence in array
-	string str[] = {"2", "22", "222",
-	                "3", "33", "333",
-	                "4", "44", "444",
-	                "5", "55", "555",
-	                "6", "66", "666",
-	                "7", "77", "777", "7777",
-	                "8", "88", "888",
-	                "9", "99", "999", "9999"
-	               };
 
-	string input = "GEEKSFORGEEKS";
-	//Output should be - 4333355777733366677743333557777
-	cout << printSequence(str, input);
-	return 0;
+int main() {
+    int t;
+    cin >> t;
+    while (t--)
+    {
+        string s;
+        cin >> s;
+        cout << countReversals(s) << endl;
+    }
+    return 0;
 }

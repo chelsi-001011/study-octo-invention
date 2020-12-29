@@ -1,29 +1,71 @@
-//Word Break
-// Input:
-// n = 12
-// B = { "i", "like", "sam", "sung", "samsung", "mobile",
-// "ice","cream", "icecream", "man", "go", "mango" }
-// A = "ilike"
-// Output: 1
-// Explanation:The string can be segmented as "i like".
+//Rabin-Karp Algorithm
+#include <bits/stdc++.h>
+using namespace std;
 
-// A : given string to search
-// B : vector of available strings
+// d is the number of characters in the input alphabet
+#define d 256
 
-int wordBreak(string A, vector<string> &B) {
-    int n = A.size();
-    vector <int> v(n, 0);
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = i; j < n; j++)
-        {
-            string s = A.substr(i, j - i + 1);
-            auto it = find(B.begin(), B.end(), s);
-            if (it != B.end())
-            {
-                v[j] = 1;
-            }
-        }
-    }
-    return v[n - 1];
+//q is a prime number used for hash function
+
+void search (char pat[], char txt[], int q) {
+	int m = strlen(pat);
+	int n = strlen(txt);
+	int i = 0, j = 0;
+	int p = 0; // hash value for pattern
+	int t = 0; // hash value for txt
+	int h = 1;
+
+	// The value of h would be "pow(d, M-1)%q"
+	for (i = 0; i < m - 1; i++)
+	{
+		h = (h * d) % q;
+	}
+
+	//first set of values for pattern and text
+	for ( i = 0; i < m; i++)
+	{
+		p = (p * d + pat[i]) % q;
+		t = (t * d + txt[i]) % q;
+	}
+
+	//sliding over the text now
+	for (i = 0; i <= n - m; i++)
+	{
+		if (p == t)
+		{
+			for (j = 0; j < m; j++)
+			{
+				if (txt[i + j] != pat[j])
+					break;
+
+			}
+			if (j == m)
+			{
+				cout << "Pattern found at index " << i << endl;
+			}
+		}
+
+		if (i < n - m)
+		{
+			t = (d * (t - txt[i] * h) + txt[i + m]) % q;
+
+			if (t < 0)
+			{
+				t = (t + q);
+			}
+		}
+	}
+}
+
+int main()
+{
+	char txt[] = "GEEKS FOR GEEKS";
+	char pat[] = "GEEK";
+
+	// A prime number
+	int q = 101;
+
+	// Function Call
+	search(pat, txt, q);
+	return 0;
 }

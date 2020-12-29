@@ -1,45 +1,35 @@
-//Longest Prefix Suffix
-
-// Expected Time Complexity: O(|str|)
-// Expected Auxiliary Space: O(|str|)
-
-//Using KMP search
-#include<bits/stdc++.h>
+//Convert a sentence into its equivalent mobile numeric keypad sequence
+//Checkout the image : https://media.geeksforgeeks.org/wp-content/cdn-uploads/Mobile-keypad.png
+//Input : GEEKSFORGEEKS
+// Output : 4333355777733366677743333557777
+#include <bits/stdc++.h>
 using namespace std;
-int longestPrefixSuffix(string s)
+
+string printSequence(string s[], string input)
 {
-	int n = s.size();
-
-	int lps[n];
-	lps[0] = 0;
-
-	int len = 0;
-
-	int i = 1;
-	while (i < n)
+	string res = "";
+	for (int i = 0; i < input.size(); i++)
 	{
-		if (s[i] == s[len])
-		{
-			len++;
-			lps[i] = len;
-			++i;
-		}
-		else {
-			if (len != 0)
-			{
-				len = lps[len - 1];
-			} else {
-				lps[i] = 0;
-				++i;
-			}
-		}
+		res += s[input[i] - 65];
 	}
-	return lps[n - 1];
+	return res;
 }
 
 int main()
 {
-	string s = "aaaa";
-	cout << longestPrefixSuffix(s);
+	// storing the sequence in array
+	string str[] = {"2", "22", "222",
+	                "3", "33", "333",
+	                "4", "44", "444",
+	                "5", "55", "555",
+	                "6", "66", "666",
+	                "7", "77", "777", "7777",
+	                "8", "88", "888",
+	                "9", "99", "999", "9999"
+	               };
+
+	string input = "GEEKSFORGEEKS";
+	//Output should be - 4333355777733366677743333557777
+	cout << printSequence(str, input);
 	return 0;
 }

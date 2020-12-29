@@ -1,69 +1,29 @@
-// Count the Reversals
-// Input
-// 4
-// }{{}}{{{
-// {{}}}}
-// {{}{{{}{{}}{{
-// {{{{}}}}
+// Count Palindromic Subsequences
+// Expected Time Complexity: O(N*N)
+// Expected Auxiliary Space: O(N*N)
+int dp[1001][1001];
+int helper(int i, int j, string s) {
 
-// Output
-// 3
-// 1
-// -1
-// 0
-// Time Complexity: O(n)
-// Auxiliary Space: O(n)
-#include <iostream>
-#include <bits/stdc++.h>
-using namespace std;
+    if (i > j) return 0;
 
-int countReversals(string s) {
-    int n = s.size();
+    if (i == j) return 1;
 
-    if (n % 2 != 0)
+    if (dp[i][j] != -1) return dp[i][j];
+
+    if (s[i] == s[j])
     {
-        return -1;
+        return dp[i][j] = 1 + helper(i + 1, j, s) + helper(i, j - 1, s);
     }
-    stack <char> stk;
-
-    for (int i = 0; i < n; i++)
+    else
     {
-        if (s[i] == '}' && !stk.empty())
-        {
-            if ( stk.top() == '{') {
-                stk.pop();
-            }
-            else {
-                stk.push(s[i]);
-            }
-        } else {
-            stk.push(s[i]);
-        }
+        return dp[i][j] = helper(i + 1, j, s) + helper(i, j - 1, s) - helper(i + 1, j - 1, s);
     }
-    int M = 0, N = 0, res = 0;
-    while (!stk.empty()) {
-        if (stk.top() == '{')
-            M++;
-        else {
-            N++;
-        }
-        stk.pop();
-    }
-    res = ceil((double)M / 2) + ceil((double)N / 2);
-    // ceil(m/2) + ceil(n/2) == (m+n)/2 + (n/2)
-    cout << ceil((double)M / 2) << " " << ceil((double)N / 2) << endl;
-    return res;
 }
+int countPS(string str)
+{
+    int n = str.length();
+    dp[n][n];
+    memset(dp, -1, sizeof(dp));
 
-
-int main() {
-    int t;
-    cin >> t;
-    while (t--)
-    {
-        string s;
-        cin >> s;
-        cout << countReversals(s) << endl;
-    }
-    return 0;
+    return helper(0, n - 1, str);
 }

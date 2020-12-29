@@ -1,53 +1,29 @@
+//Word Break
+// Input:
+// n = 12
+// B = { "i", "like", "sam", "sung", "samsung", "mobile",
+// "ice","cream", "icecream", "man", "go", "mango" }
+// A = "ilike"
+// Output: 1
+// Explanation:The string can be segmented as "i like".
 
-// Parenthesis Checker - Function to return if the paranthesis are balanced or not
-// Expected Time Complexity: O(|x|)
-// Expected Auixilliary Space: O(|x|)
-bool ispar(string x)
-{
-  stack <char> stk;
-  if (x[0] == ')' || x[0] == '}' || x[0] == ']')
-    return false;
-  for (int i = 0; i < x.length(); i++)
-  {
-    if (x[i] == ')')
+// A : given string to search
+// B : vector of available strings
+
+int wordBreak(string A, vector<string> &B) {
+    int n = A.size();
+    vector <int> v(n, 0);
+    for (int i = 0; i < n; i++)
     {
-      if (stk.empty() )
-      {
-        return false;
-      }
-      else if ( stk.top() != '(')
-      {
-        return false;
-      } else {
-        stk.pop();
-      }
-    } else if (x[i] == ']')
-    {
-      if (stk.empty() )
-      {
-        return false;
-      }
-      else if (stk.top() == '[')
-      {
-        stk.pop();
-      } else {
-        return false;
-      }
-    } else if (x[i] == '}')
-    {
-      if (stk.empty() )
-      {
-        return false;
-      }
-      else if (stk.top() == '{')
-      {
-        stk.pop();
-      } else {
-        return false;
-      }
-    } else {
-      stk.push(x[i]);
+        for (int j = i; j < n; j++)
+        {
+            string s = A.substr(i, j - i + 1);
+            auto it = find(B.begin(), B.end(), s);
+            if (it != B.end())
+            {
+                v[j] = 1;
+            }
+        }
     }
-  }
-  return stk.empty();
+    return v[n - 1];
 }
